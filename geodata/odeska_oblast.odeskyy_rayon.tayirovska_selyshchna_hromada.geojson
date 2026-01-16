@@ -1,0 +1,1 @@
+{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"@id":"node/337690259","@relations":[{"role":"admin_centre","rel":18690132,"reltags":{"admin_level":"9","boundary":"administrative","name":"Сухий Лиман","place":"village","type":"boundary"}}]},"geometry":{"type":"Point","coordinates":[30.636372,46.396969]},"id":"node/337690259"}]}
