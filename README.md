@@ -19,15 +19,15 @@ For maximum speed and reliability, use **jsDelivr CDN**.
 **Base URL / Базова адреса:**
 
 ```
-https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main/
+https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main/geodata/
 ```
 
 **Example requests / Приклади запитів:**
 
 ```
-https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main/Ukraine.geojson
-https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main/odeska_oblast.geojson
-https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main/odeska_oblast.odeskyy_rayon.geojson
+https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main/geodata/Ukraine.geojson
+https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main/geodata/odeska_oblast.geojson
+https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main/geodata/odeska_oblast.odeskyy_rayon.geojson
 ```
 
 ---
@@ -85,7 +85,8 @@ Files are named based on Ukrainian names transliterated to Latin characters (slu
 ### JavaScript / TypeScript
 
 ```javascript
-const CDN_BASE = "https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main";
+const CDN_BASE =
+  "https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main/geodata";
 
 const toSlug = (text) => {
   if (!text) return "unknown";
@@ -162,7 +163,7 @@ const loadGeoJSON = async (pathSegments) => {
 import re
 import requests
 
-CDN_BASE = "https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main"
+CDN_BASE = "https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main/geodata"
 
 TRANS_MAP = {
     'а': 'a', 'б': 'b', 'в': 'v', 'г': 'h', 'ґ': 'g', 'д': 'd', 'е': 'e', 'є': 'ye',
@@ -201,7 +202,7 @@ def load_geojson(path_segments: list) -> dict:
 ```php
 <?php
 
-const CDN_BASE = "https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main";
+const CDN_BASE = "https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main/geodata";
 
 function toSlug(string $text): string
 {
@@ -236,7 +237,7 @@ function loadGeoJSON(array $pathSegments): array
 ```swift
 import Foundation
 
-let CDN_BASE = "https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main"
+let CDN_BASE = "https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main/geodata"
 
 let transMap: [Character: String] = [
     "а": "a", "б": "b", "в": "v", "г": "h", "ґ": "g", "д": "d", "е": "e", "є": "ye",
@@ -271,7 +272,7 @@ func loadGeoJSON(_ pathSegments: [String]) async throws -> [String: Any] {
 ```kotlin
 import java.net.URL
 
-const val CDN_BASE = "https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main"
+const val CDN_BASE = "https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main/geodata"
 
 val transMap = mapOf(
     'а' to "a", 'б' to "b", 'в' to "v", 'г' to "h", 'ґ' to "g", 'д' to "d",
