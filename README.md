@@ -1,46 +1,94 @@
 # Ukraine Administrative GeoJSON Database
 
-A repository containing structured, hierarchical GeoJSON files for the administrative divisions of Ukraine (Oblasts, Raions, Hromadas, City Districts). Designed for **Lazy Loading** in web applications.
-
-## База даних адміністративних кордонів України (GeoJSON)
-
-Репозиторій містить структуровані, ієрархічні файли GeoJSON для адміністративно-територіального устрою України (Області, Райони, Громади, Райони міст). Призначений для "лінивого" завантаження даних (Lazy Loading) у веб-додатках.
+Hierarchical GeoJSON files for Ukraine administrative divisions (Oblasts, Raions, Hromadas, Settlements). Designed for lazy loading in web mapping applications.
 
 ---
 
-## Структура даних / Data Structure
+# База даних адміністративних кордонів України (GeoJSON)
 
-Файли організовані відповідно до адміністративних рівнів (Admin Level):
-
-| Папка / Folder        | Admin Level | Опис / Description                                                                            |
-| :-------------------- | :---------- | :-------------------------------------------------------------------------------------------- |
-| **`Ukraine.geojson`** | 4           | Кордони всієї країни та областей. / Country and Oblast boundaries.                            |
-| **`/raions`**         | 6           | Кордони районів всередині областей. / Raion boundaries within Oblasts.                        |
-| **`/hromadas`**       | 7           | Кордони територіальних громад. / Hromada boundaries.                                          |
-| **`/settlements`**    | 9/10        | Кордони населених пунктів та районів великих міст. / Settlement and City District boundaries. |
+Ієрархічні GeoJSON файли для адміністративно-територіального устрою України (Області, Райони, Громади, Населені пункти). Призначено для лінивого завантаження даних у веб-додатках.
 
 ---
 
-## Логіка іменування / Naming Convention
+## CDN Access / Доступ через CDN
 
-Файли названі на основі українських назв об'єктів, перетворених у **slug** (транслітерація на англійську + snake_case).
+For maximum speed and reliability, use **jsDelivr CDN**.
 
-**Приклад (Example):**
+Для максимальної швидкості та надійності використовуйте **jsDelivr CDN**.
 
-- `Одеська область` -> `odeska.geojson`
-- `Одеський район` -> `odeskyi_raion.geojson`
-- `Одеська міська громада` -> `odeska_miska_hromada.geojson`
+**Base URL / Базова адреса:**
 
-### Алгоритми транслітерації / Transliteration Algorithms
+```
+https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main/
+```
 
-Для забезпечення коректного пошуку файлів у різних мовах програмування використовуйте наступні імплементації.
+**Example requests / Приклади запитів:**
 
-_(To ensure correct file lookup in different programming languages, use the following implementations.)_
+```
+https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main/Ukraine.geojson
+https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main/odeska_oblast.geojson
+https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main/odeska_oblast.odeskyy_rayon.geojson
+```
 
-#### JavaScript / TypeScript
+---
+
+## File Structure / Структура файлів
+
+All files are located in the repository root. The naming uses **dot-notation** to represent the hierarchy.
+
+Усі файли знаходяться в корені репозиторію. Іменування використовує **крапкову нотацію** для відображення ієрархії.
+
+```
+Ukraine.geojson                                          # Country / Країна (all oblasts / усі області)
+{oblast_slug}.geojson                                    # Oblast / Область (raions / райони)
+{oblast_slug}.{raion_slug}.geojson                       # Raion / Район (hromadas / громади)
+{oblast_slug}.{raion_slug}.{hromada_slug}.geojson        # Hromada / Громада (settlements / населені пункти)
+```
+
+### Hierarchy Examples / Приклади ієрархії
+
+| Admin Level | Ukrainian Name / Українська назва | Filename / Назва файлу                                     |
+| :---------- | :-------------------------------- | :--------------------------------------------------------- |
+| Country     | Україна                           | `Ukraine.geojson`                                          |
+| Oblast      | Одеська область                   | `odeska_oblast.geojson`                                    |
+| Raion       | Одеський район                    | `odeska_oblast.odeskyy_rayon.geojson`                      |
+| Hromada     | Одеська міська громада            | `odeska_oblast.odeskyy_rayon.odeska_miska_hromada.geojson` |
+
+---
+
+## Naming Convention / Правила іменування
+
+Files are named based on Ukrainian names transliterated to Latin characters (slug format). The original Ukrainian names are stored in the `name` property of each GeoJSON feature. Since filenames cannot contain Cyrillic characters, transliteration is required to build the correct file path from feature properties.
+
+Файли названі на основі українських назв, транслітерованих латиницею (формат slug). Оригінальні українські назви зберігаються у властивості `name` кожного GeoJSON об'єкту. Оскільки імена файлів не можуть містити кириличні символи, для побудови правильного шляху до файлу з властивостей об'єкту потрібна транслітерація.
+
+**Transliteration rules / Правила транслітерації:**
+
+| Ukr | Lat | Ukr | Lat | Ukr | Lat    |
+| :-- | :-- | :-- | :-- | :-- | :----- |
+| а   | a   | к   | k   | х   | kh     |
+| б   | b   | л   | l   | ц   | ts     |
+| в   | v   | м   | m   | ч   | ch     |
+| г   | h   | н   | n   | ш   | sh     |
+| ґ   | g   | о   | o   | щ   | shch   |
+| д   | d   | п   | p   | ь   | (skip) |
+| е   | e   | р   | r   | ю   | yu     |
+| є   | ye  | с   | s   | я   | ya     |
+| ж   | zh  | т   | t   | ї   | yi     |
+| з   | z   | у   | u   | і   | i      |
+| и   | y   | ф   | f   | '   | (skip) |
+
+---
+
+## Implementation Examples / Приклади реалізації
+
+### JavaScript / TypeScript
 
 ```javascript
+const CDN_BASE = "https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main";
+
 const toSlug = (text) => {
+  if (!text) return "unknown";
   return text
     .toLowerCase()
     .replace(/є/g, "ye")
@@ -56,6 +104,8 @@ const toSlug = (text) => {
     .replace(/ц/g, "ts")
     .replace(/ж/g, "zh")
     .replace(/ь/g, "")
+    .replace(/'/g, "")
+    .replace(/ʼ/g, "")
     .replace(/а/g, "a")
     .replace(/б/g, "b")
     .replace(/в/g, "v")
@@ -79,112 +129,234 @@ const toSlug = (text) => {
     .replace(/ы/g, "y")
     .replace(/э/g, "e")
     .replace(/ё/g, "yo")
-    .replace(/[^a-z0-9]/g, "_");
+    .replace(/[^a-z0-9]/g, "_")
+    .replace(/_+/g, "_")
+    .replace(/^_|_$/g, "");
 };
+
+const buildFilename = (pathSegments) => {
+  if (pathSegments.length === 0) return "Ukraine";
+  return pathSegments.join(".");
+};
+
+const loadGeoJSON = async (pathSegments) => {
+  const filename = buildFilename(pathSegments);
+  const url = `${CDN_BASE}/${filename}.geojson`;
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`Failed to load: ${url}`);
+  return response.json();
+};
+
+// Usage / Використання:
+// loadGeoJSON([])                                              // Ukraine
+// loadGeoJSON(["odeska_oblast"])                               // Raions of Odesa oblast
+// loadGeoJSON(["odeska_oblast", "odeskyy_rayon"])              // Hromadas
+// loadGeoJSON(["odeska_oblast", "odeskyy_rayon", "..."])       // Settlements
 ```
 
-#### Python
+---
+
+### Python
 
 ```python
 import re
+import requests
+
+CDN_BASE = "https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main"
 
 TRANS_MAP = {
-    'а': 'a', 'б': 'b', 'в': 'v', 'г': 'h', 'ґ': 'g', 'д': 'd', 'е': 'e', 'є': 'ye', 'ж': 'zh',
-    'з': 'z', 'и': 'y', 'і': 'i', 'ї': 'yi', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n',
-    'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u', 'ф': 'f', 'х': 'kh', 'ц': 'ts',
-    'ч': 'ch', 'ш': 'sh', 'щ': 'shch', 'ь': '', 'ю': 'yu', 'я': 'ya', 'ы': 'y', 'э': 'e', 'ё': 'yo'
+    'а': 'a', 'б': 'b', 'в': 'v', 'г': 'h', 'ґ': 'g', 'д': 'd', 'е': 'e', 'є': 'ye',
+    'ж': 'zh', 'з': 'z', 'и': 'y', 'і': 'i', 'ї': 'yi', 'й': 'y', 'к': 'k', 'л': 'l',
+    'м': 'm', 'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u',
+    'ф': 'f', 'х': 'kh', 'ц': 'ts', 'ч': 'ch', 'ш': 'sh', 'щ': 'shch', 'ь': '',
+    'ю': 'yu', 'я': 'ya', 'ы': 'y', 'э': 'e', 'ё': 'yo', "'": '', 'ʼ': ''
 }
 
-def to_slug(text):
+def to_slug(text: str) -> str:
+    if not text:
+        return "unknown"
     text = text.lower()
     slug = "".join([TRANS_MAP.get(c, c) for c in text])
-    slug = re.sub(r'[^a-zA-Z0-9]', '_', slug)
-    return slug.lower()
+    slug = re.sub(r'[^a-z0-9]', '_', slug)
+    slug = re.sub(r'_+', '_', slug)
+    return slug.strip('_')
 
-# Example: to_slug("Одеський район") -> "odeskyi_raion"
+def build_filename(path_segments: list) -> str:
+    if not path_segments:
+        return "Ukraine"
+    return ".".join(path_segments)
+
+def load_geojson(path_segments: list) -> dict:
+    filename = build_filename(path_segments)
+    url = f"{CDN_BASE}/{filename}.geojson"
+    response = requests.get(url)
+    response.raise_for_status()
+    return response.json()
 ```
 
-#### PHP
+---
+
+### PHP
 
 ```php
 <?php
 
-function to_slug(string $text): string
+const CDN_BASE = "https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main";
+
+function toSlug(string $text): string
 {
     $map = [
-        'а' => 'a', 'б' => 'b', 'в' => 'v', 'г' => 'h', 'ґ' => 'g', 'д' => 'd', 'е' => 'e', 'є' => 'ye',
-        'ж' => 'zh', 'з' => 'z', 'и' => 'y', 'і' => 'i', 'ї' => 'yi', 'й' => 'y', 'к' => 'k', 'л' => 'l',
-        'м' => 'm', 'н' => 'n', 'о' => 'o', 'п' => 'p', 'р' => 'r', 'с' => 's', 'т' => 't', 'у' => 'u',
-        'ф' => 'f', 'х' => 'kh', 'ц' => 'ts', 'ч' => 'ch', 'ш' => 'sh', 'щ' => 'shch', 'ь' => '',
-        'ю' => 'yu', 'я' => 'ya', 'ы' => 'y', 'э' => 'e', 'ё' => 'yo',
+        'а' => 'a', 'б' => 'b', 'в' => 'v', 'г' => 'h', 'ґ' => 'g', 'д' => 'd',
+        'е' => 'e', 'є' => 'ye', 'ж' => 'zh', 'з' => 'z', 'и' => 'y', 'і' => 'i',
+        'ї' => 'yi', 'й' => 'y', 'к' => 'k', 'л' => 'l', 'м' => 'm', 'н' => 'n',
+        'о' => 'o', 'п' => 'p', 'р' => 'r', 'с' => 's', 'т' => 't', 'у' => 'u',
+        'ф' => 'f', 'х' => 'kh', 'ц' => 'ts', 'ч' => 'ch', 'ш' => 'sh',
+        'щ' => 'shch', 'ь' => '', 'ю' => 'yu', 'я' => 'ya',
+        'ы' => 'y', 'э' => 'e', 'ё' => 'yo', "'" => '', 'ʼ' => ''
     ];
 
     $text = mb_strtolower($text, 'UTF-8');
     $text = strtr($text, $map);
+    $slug = preg_replace('/[^a-z0-9]+/', '_', $text);
+    return trim($slug, '_');
+}
 
-    // Remove non-alphanumeric and replace with underscore
-    $slug = preg_replace('/[^a-zA-Z0-9]+/', '_', $text);
-
-    // Ensure all characters are lower-case (should be already, but safe check)
-    return strtolower($slug);
+function loadGeoJSON(array $pathSegments): array
+{
+    $filename = empty($pathSegments) ? "Ukraine" : implode(".", $pathSegments);
+    $url = CDN_BASE . "/{$filename}.geojson";
+    return json_decode(file_get_contents($url), true);
 }
 ```
 
-#### Go (Golang)
+---
 
-```go
-package main
+### Swift (iOS/macOS)
 
-import (
-	"strings"
-	"regexp"
+```swift
+import Foundation
+
+let CDN_BASE = "https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main"
+
+let transMap: [Character: String] = [
+    "а": "a", "б": "b", "в": "v", "г": "h", "ґ": "g", "д": "d", "е": "e", "є": "ye",
+    "ж": "zh", "з": "z", "и": "y", "і": "i", "ї": "yi", "й": "y", "к": "k", "л": "l",
+    "м": "m", "н": "n", "о": "o", "п": "p", "р": "r", "с": "s", "т": "t", "у": "u",
+    "ф": "f", "х": "kh", "ц": "ts", "ч": "ch", "ш": "sh", "щ": "shch", "ь": "",
+    "ю": "yu", "я": "ya", "ї": "yi", "і": "i", "'": "", "ʼ": ""
+]
+
+func toSlug(_ text: String) -> String {
+    guard !text.isEmpty else { return "unknown" }
+    var result = ""
+    for char in text.lowercased() {
+        result += transMap[char] ?? String(char)
+    }
+    let slug = result.replacingOccurrences(of: "[^a-z0-9]+", with: "_", options: .regularExpression)
+    return slug.trimmingCharacters(in: CharacterSet(charactersIn: "_"))
+}
+
+func loadGeoJSON(_ pathSegments: [String]) async throws -> [String: Any] {
+    let filename = pathSegments.isEmpty ? "Ukraine" : pathSegments.joined(separator: ".")
+    guard let url = URL(string: "\(CDN_BASE)/\(filename).geojson") else { throw URLError(.badURL) }
+    let (data, _) = try await URLSession.shared.data(from: url)
+    return try JSONSerialization.jsonObject(with: data) as! [String: Any]
+}
+```
+
+---
+
+### Kotlin (Android)
+
+```kotlin
+import java.net.URL
+
+const val CDN_BASE = "https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main"
+
+val transMap = mapOf(
+    'а' to "a", 'б' to "b", 'в' to "v", 'г' to "h", 'ґ' to "g", 'д' to "d",
+    'е' to "e", 'є' to "ye", 'ж' to "zh", 'з' to "z", 'и' to "y", 'і' to "i",
+    'ї' to "yi", 'й' to "y", 'к' to "k", 'л' to "l", 'м' to "m", 'н' to "n",
+    'о' to "o", 'п' to "p", 'р' to "r", 'с' to "s", 'т' to "t", 'у' to "u",
+    'ф' to "f", 'х' to "kh", 'ц' to "ts", 'ч' to "ch", 'ш' to "sh", 'щ' to "shch",
+    'ь' to "", 'ю' to "yu", 'я' to "ya", '\'' to "", 'ʼ' to ""
 )
 
-var transMap = map[rune]string{
-    'а': "a", 'б': "b", 'в': "v", 'г': "h", 'ґ': "g", 'д': "d", 'е': "e", 'є': "ye",
-    'ж': "zh", 'з": "z", 'и': "y", 'і': "i", 'ї': "yi", 'й': "y", 'к': "k", 'л': "l",
-    'м': "m", 'н': "n", 'о': "o", 'п': "p", 'р': "r", 'с': "s", 'т': "t", 'у': "u",
-    'ф': "f", 'х': "kh", 'ц': "ts", 'ч': "ch", 'ш': "sh", 'щ': "shch", 'ь': "",
-    'ю': "yu", 'я': "ya", 'ы': "y", 'э': "e", 'ё': "yo",
+fun toSlug(text: String): String {
+    if (text.isEmpty()) return "unknown"
+    val result = text.lowercase().map { transMap[it] ?: it.toString() }.joinToString("")
+    return result.replace(Regex("[^a-z0-9]+"), "_").trim('_')
 }
 
-var nonAlphanumeric = regexp.MustCompile("[^a-zA-Z0-9]+")
-
-func toSlug(text string) string {
-    var slugBuilder strings.Builder
-
-    for _, r := range text {
-        rLower := strings.ToLower(string(r))
-        if val, ok := transMap[r]; ok {
-            slugBuilder.WriteString(val)
-        } else if val, ok := transMap[[]rune(rLower)[0]]; ok {
-            // Check for uppercase letters
-            slugBuilder.WriteString(val)
-        } else {
-            slugBuilder.WriteRune(r)
-        }
-    }
-
-    slug := nonAlphanumeric.ReplaceAllString(slugBuilder.String(), "_")
-    return strings.ToLower(slug)
+fun loadGeoJSON(pathSegments: List<String>): String {
+    val filename = if (pathSegments.isEmpty()) "Ukraine" else pathSegments.joinToString(".")
+    return URL("$CDN_BASE/$filename.geojson").readText()
 }
-// Note: Golang implementation requires careful handling of Unicode.
-// A simpler, but less strictly correct, approach is often preferred for simple slugs.
 ```
 
-## Як використовувати (CDN) / How to Use
+---
 
-Для максимальної швидкості та надійності використовуйте **jsDelivr CDN**.
+## Drill-Down Navigation / Навігація вглиб
 
-**Базовий URL (Base URL):**
+**English:**
 
-```
-https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main/
-```
+1. Load `Ukraine.geojson` for initial country view (all oblasts)
+2. On oblast click, build path: `{oblast_slug}.geojson` to load raions
+3. On raion click, build path: `{oblast_slug}.{raion_slug}.geojson` to load hromadas
+4. On hromada click, build path: `{oblast_slug}.{raion_slug}.{hromada_slug}.geojson` to load settlements
 
-**Приклад запиту (Example Fetch):**
+**Ukrainian:**
 
-```
-https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main/Ukraine.geojson
-https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main/raions/odeska.geojson
-```
+1. Завантажте `Ukraine.geojson` для початкового перегляду країни (всі області)
+2. При кліку на область, побудуйте шлях: `{oblast_slug}.geojson` для завантаження районів
+3. При кліку на район, побудуйте шлях: `{oblast_slug}.{raion_slug}.geojson` для завантаження громад
+4. При кліку на громаду, побудуйте шлях: `{oblast_slug}.{raion_slug}.{hromada_slug}.geojson` для завантаження населених пунктів
+
+---
+
+## Contributing / Як долучитися
+
+**English:**
+
+We welcome contributions! You can help improve this database by:
+
+- Adding missing settlements or city districts
+- Correcting existing boundary data
+- Improving transliteration accuracy
+
+To contribute:
+
+1. Fork the repository
+2. Make your changes following the naming convention
+3. Submit a Pull Request with a clear description
+
+**Ukrainian:**
+
+Ми вітаємо внески! Ви можете допомогти покращити цю базу даних:
+
+- Додавши відсутні населені пункти або райони міст
+- Виправивши існуючі дані кордонів
+- Покращивши точність транслітерації
+
+Щоб зробити внесок:
+
+1. Зробіть форк репозиторію
+2. Внесіть зміни, дотримуючись правил іменування
+3. Надішліть Pull Request з чітким описом
+
+---
+
+## Data Sources / Джерела даних
+
+- OpenStreetMap administrative boundaries
+- Admin levels: 4 (Oblast), 6 (Raion), 7 (Hromada), 9-10 (Settlements/City Districts)
+
+---
+
+## License / Ліцензія
+
+Data is provided under ODbL (OpenStreetMap license).
+
+Дані надаються за ліцензією ODbL (ліцензія OpenStreetMap).
+
+Repository / Репозиторій: [github.com/darmat1/ukraine-geo-data](https://github.com/darmat1/ukraine-geo-data)
