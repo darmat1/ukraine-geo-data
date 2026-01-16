@@ -179,11 +179,12 @@ func toSlug(text string) string {
 **Базовий URL (Base URL):**
 
 ```
-https://cdn.jsdelivr.net/gh/<USER>/<REPO>@main/
+https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main/
 ```
 
 **Приклад запиту (Example Fetch):**
 
 ```
-https://cdn.jsdelivr.net/gh/your-username/ukraine-geo-data@main/raions/odeska.geojson
+https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main/Ukraine.geojson
+https://cdn.jsdelivr.net/gh/darmat1/ukraine-geo-data@main/raions/odeska.geojson
 ```
