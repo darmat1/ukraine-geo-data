@@ -148,11 +148,27 @@ const loadGeoJSON = async (pathSegments) => {
   return response.json();
 };
 
-// Usage / Використання:
+// Usage with slugs / Використання зі слагами:
 // loadGeoJSON([])                                              // Ukraine
 // loadGeoJSON(["odeska_oblast"])                               // Raions of Odesa oblast
 // loadGeoJSON(["odeska_oblast", "odeskyy_rayon"])              // Hromadas
 // loadGeoJSON(["odeska_oblast", "odeskyy_rayon", "..."])       // Settlements
+
+// Usage with Ukrainian names / Використання з українськими назвами:
+// When you have a feature's `name` property from GeoJSON, use toSlug() to build the path:
+// Коли ви маєте властивість `name` об'єкту GeoJSON, використовуйте toSlug() для побудови шляху:
+
+const oblastName = "Одеська область"; // from feature.properties.name
+const raionName = "Одеський район"; // from child feature.properties.name
+
+console.log(toSlug(oblastName)); // "odeska_oblast"
+console.log(toSlug(raionName)); // "odeskyy_rayon"
+
+// Load raions for selected oblast / Завантажити райони вибраної області:
+loadGeoJSON([toSlug(oblastName)]);
+
+// Load hromadas for selected raion / Завантажити громади вибраного району:
+loadGeoJSON([toSlug(oblastName), toSlug(raionName)]);
 ```
 
 ---
