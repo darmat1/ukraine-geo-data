@@ -34,11 +34,11 @@ jobs:
 
       - name: Purge CDN Cache for changed files
         if: ${{ steps.changed_files.outputs.PURGE_LIST != '' }}
-        uses: appleboy/curl-action@v1.0.0
-        with:
-          urls: ${{ steps.changed_files.outputs.PURGE_LIST }}
-          base_url: https://purge.jsdelivr.net/
-          method: POST
+        run: |
+          for URL in ${{ steps.changed_files.outputs.PURGE_LIST }}; do
+            echo "Purging $URL"
+            curl -X POST "https://purge.jsdelivr.net/$URL"
+          done
 
       - name: Report Success
         if: ${{ steps.changed_files.outputs.PURGE_LIST != '' }}
