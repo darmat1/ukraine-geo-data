@@ -19,7 +19,7 @@ jobs:
       - name: Get list of changed GeoJSON files
         id: changed_files
         run: |
-          CHANGED_FILES=$(git diff --name-only --diff-filter=A M D HEAD^..HEAD | grep 'geodata/.*\.geojson$' | tr '\n' ' ')
+          CHANGED_FILES=$(git diff --name-only --diff-filter=AMD HEAD^..HEAD | grep 'geodata/.*\.geojson$' | tr '\n' ' ')
           PURGE_LIST=""
 
           for FILE in $CHANGED_FILES; do
