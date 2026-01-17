@@ -37,7 +37,7 @@ jobs:
         run: |
           for URL in ${{ steps.changed_files.outputs.PURGE_LIST }}; do
             echo "Purging $URL"
-            curl -X POST "https://purge.jsdelivr.net/$URL"
+            curl -s "https://purge.jsdelivr.net/$URL"
           done
 
       - name: Report Success
