@@ -1,0 +1,48 @@
+name: Purge CDN Cache
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "geodata/**.geojson"
+
+jobs:
+  purge-jsdelivr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get list of changed GeoJSON files
+        id: changed_files
+        run: |
+          CHANGED_FILES=$(git diff --name-only --diff-filter=A M D HEAD^..HEAD | grep 'geodata/.*\.geojson$' | tr '\n' ' ')
+          PURGE_LIST=""
+
+          for FILE in $CHANGED_FILES; do
+              CDN_PATH=${FILE}
+              FULL_CDN_PATH="gh/${{ github.repository }}@main/$CDN_PATH"
+              PURGE_LIST="$PURGE_LIST $FULL_CDN_PATH"
+          done
+
+          echo "PURGE_LIST=$PURGE_LIST" >> $GITHUB_OUTPUT
+          echo "Debug: Changed files: $CHANGED_FILES"
+          echo "Debug: Purge list: $PURGE_LIST"
+
+      - name: Purge CDN Cache for changed files
+        if: ${{ steps.changed_files.outputs.PURGE_LIST != '' }}
+        uses: appleboy/curl-action@v1.0.0
+        with:
+          urls: ${{ steps.changed_files.outputs.PURGE_LIST }}
+          base_url: https://purge.jsdelivr.net/
+          method: POST
+
+      - name: Report Success
+        if: ${{ steps.changed_files.outputs.PURGE_LIST != '' }}
+        run: |
+          echo "CDN purge request sent for $(echo "${{ steps.changed_files.outputs.PURGE_LIST }}" | wc -w | tr -d '[:space:]') files."
+          echo "Changed files: ${{ steps.changed_files.outputs.PURGE_LIST }}"
+          echo "Cache will be updated within 10-20 minutes."
